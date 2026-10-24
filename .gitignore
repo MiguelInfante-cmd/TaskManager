@@ -1,0 +1,8 @@
+# Sistema y dependencias
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Logs y entornos
+*.log
+.env

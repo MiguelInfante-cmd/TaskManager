@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="TaskManager Pro - Aplicación interactiva de gestión de tareas en JavaScript Vanilla con persistencia offline en LocalStorage y sincronización con API REST.">
+  <meta name="author" content="Miguel Ángel Infante Mejía">
+  <title>TaskManager Pro | Gestor de Tareas Offline (Vanilla JS)</title>
+  
+  <!-- Google Fonts Preconnect -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- CSS Design System -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- HEADER -->
+    <header class="app-header" role="banner">
+      <div class="header-brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>TaskManager Pro</h1>
+          <p>Gestión de Tareas Offline &bull; Vanilla JavaScript ES6+</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Live Connection Status Pill -->
+        <div id="connectionStatus" class="status-pill" title="Estado de la conexión a internet">
+          <span class="pulse-dot"></span>
+          <span id="connectionStatusText">En línea</span>
+        </div>
+
+        <!-- Sync API Button -->
+        <button id="syncApiBtn" class="btn btn-secondary" title="Importar tareas de prueba desde JSONPlaceholder">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+          </svg>
+          Sincronizar API
+        </button>
+
+        <!-- New Task Button -->
+        <button id="openNewTaskModalBtn" class="btn btn-primary">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Nueva Tarea
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+      <!-- METRICS & DASHBOARD -->
+      <section class="dashboard-grid" aria-label="Métricas del sistema">
+        <!-- Metric: Total -->
+        <article class="metric-card total">
+          <div class="metric-header">
+            <span class="metric-title">Total Tareas</span>
+            <div class="metric-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metricTotal">0</div>
+        </article>
+
+        <!-- Metric: Pending -->
+        <article class="metric-card pending">
+          <div class="metric-header">
+            <span class="metric-title">Pendientes</span>
+            <div class="metric-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metricPending">0</div>
+        </article>
+
+        <!-- Metric: Completed -->
+        <article class="metric-card completed">
+          <div class="metric-header">
+            <span class="metric-title">Completadas</span>
+            <div class="metric-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metricCompleted">0</div>
+        </article>
+
+        <!-- Metric: Progress Rate -->
+        <article class="metric-card rate">
+          <div class="metric-header">
+            <span class="metric-title">Progreso</span>
+            <div class="metric-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="metric-value" id="metricRate">0%</div>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="metricRateBar"></div>
+          </div>
+        </article>
+      </section>
+
+      <!-- CONTROLS & FILTER BAR -->
+      <section class="controls-panel" aria-label="Controles de búsqueda, filtros y orden">
+        <div class="controls-row-top">
+          <!-- Real-Time Search -->
+          <div class="search-box">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <input 
+              type="text" 
+              id="searchInput" 
+              class="search-input" 
+              placeholder="Buscar tareas por título en tiempo real..."
+              autocomplete="off"
+            >
+            <button id="searchClearBtn" class="search-clear" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">✕</button>
+          </div>
+        </div>
+
+        <div class="controls-row-bottom">
+          <!-- Filter Buttons -->
+          <div class="filter-group" role="group" aria-label="Filtro por estado de tarea">
+            <button class="filter-btn active" data-filter="all">
+              Todas <span class="filter-badge" id="badgeAll">0</span>
+            </button>
+            <button class="filter-btn" data-filter="pending">
+              Pendientes <span class="filter-badge" id="badgePending">0</span>
+            </button>
+            <button class="filter-btn" data-filter="completed">
+              Completadas <span class="filter-badge" id="badgeCompleted">0</span>
+            </button>
+          </div>
+
+          <!-- Sort Dropdown -->
+          <div class="sort-group">
+            <label for="sortSelect" class="sort-label">Ordenar:</label>
+            <select id="sortSelect" class="custom-select">
+              <option value="date-desc">Fecha (Más recientes)</option>
+              <option value="date-asc">Fecha (Más antiguas)</option>
+              <option value="priority-desc">Prioridad (Alta a Baja)</option>
+              <option value="priority-asc">Prioridad (Baja a Alta)</option>
+              <option value="title-asc">Título (A - Z)</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <!-- TASK LIST SECTION -->
+      <section class="tasks-section" aria-label="Lista de tareas">
+        <div class="tasks-section-header">
+          <h2 class="tasks-section-title">
+            Lista de Tareas
+            <span class="tasks-count-pill" id="visibleTasksCount">0 visibles</span>
+          </h2>
+        </div>
+
+        <!-- Container for task items -->
+        <div id="tasksList" class="tasks-list">
+          <!-- Generated dynamically via JS -->
+        </div>
+
+        <!-- Empty State (shown when no tasks match) -->
+        <div id="emptyState" class="empty-state" style="display: none;">
+          <div class="empty-state-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 11l3 3L22 4"></path>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+            </svg>
+          </div>
+          <h3>No se encontraron tareas</h3>
+          <p id="emptyStateMessage">No hay tareas que coincidan con los filtros o la búsqueda actual. ¡Crea una nueva tarea para comenzar!</p>
+          <button id="emptyStateCreateBtn" class="btn btn-primary">➕ Crear Tarea</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="app-footer" role="contentinfo">
+      <p>
+        <strong>TaskManager Pro</strong> &bull; Proyecto JavaScript Vanilla ES6+ &bull; Persistencia Local (LocalStorage)
+      </p>
+      <p style="margin-top: 0.35rem; font-size: 0.8rem;">
+        Desarrollado por <strong>Miguel Ángel Infante Mejía</strong> &bull; 
+        <a href="https://github.com/MiguelInfante-cmd/TaskManager" target="_blank" rel="noopener">GitHub: MiguelInfante-cmd/TaskManager</a>
+      </p>
+    </footer>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: CREAR / EDITAR TAREA
+       ========================================================================== -->
+  <div id="taskModal" class="modal-overlay" aria-hidden="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 id="modalTitle" class="modal-title">Nueva Tarea</h3>
+        <button id="closeModalBtn" class="modal-close" aria-label="Cerrar modal">✕</button>
+      </div>
+      
+      <form id="taskForm" novalidate>
+        <div class="modal-body">
+          <input type="hidden" id="taskId">
+
+          <!-- Title Input -->
+          <div class="form-group">
+            <label for="taskTitleInput" class="form-label">
+              Título de la Tarea <span class="required-dot">*</span>
+            </label>
+            <input 
+              type="text" 
+              id="taskTitleInput" 
+              class="form-input" 
+              placeholder="Ej. Revisar documentación del proyecto..."
+              required
+              maxlength="120"
+            >
+            <div id="titleValidationFeedback" class="validation-feedback">
+              Por favor ingrese un título válido (mínimo 3 caracteres). No se permiten campos vacíos.
+            </div>
+          </div>
+
+          <!-- Description Input -->
+          <div class="form-group">
+            <label for="taskDescInput" class="form-label">Descripción (Opcional)</label>
+            <textarea 
+              id="taskDescInput" 
+              class="form-textarea" 
+              rows="3" 
+              placeholder="Detalles adicionales sobre la tarea..."
+              maxlength="300"
+            ></textarea>
+          </div>
+
+          <!-- Priority Select -->
+          <div class="form-group">
+            <label for="taskPrioritySelect" class="form-label">Nivel de Prioridad</label>
+            <select id="taskPrioritySelect" class="form-select">
+              <option value="Alta">🔴 Alta</option>
+              <option value="Media" selected>🟡 Media</option>
+              <option value="Baja">🟢 Baja</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancelar</button>
+          <button type="submit" id="saveTaskBtn" class="btn btn-primary">Guardar Tarea</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: CONFIRMAR ELIMINACIÓN
+       ========================================================================== -->
+  <div id="deleteModal" class="modal-overlay" aria-hidden="true" role="dialog">
+    <div class="modal-container" style="max-width: 420px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #ef4444;">Eliminar Tarea</h3>
+        <button id="closeDeleteModalBtn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="color: var(--text-secondary); font-size: 0.95rem;">
+          ¿Estás seguro de que deseas eliminar permanentemente esta tarea? Esta acción no se puede deshacer.
+        </p>
+        <p id="deleteTaskTitlePreview" style="margin-top: 0.75rem; font-weight: 600; color: var(--text-primary); word-break: break-word;"></p>
+      </div>
+      <div class="modal-footer">
+        <button id="cancelDeleteBtn" class="btn btn-secondary">Cancelar</button>
+        <button id="confirmDeleteBtn" class="btn btn-danger">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       TOAST CONTAINER
+       ========================================================================== -->
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <!-- APPLICATION ENTRY POINT (ES6 MODULES) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
