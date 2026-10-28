@@ -847,7 +847,19 @@ body {
 
 /* Checkbox */
 .task-checkbox-wrapper {
-  margin-top: 0.15rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 3px;
+  border-radius: var(--radius-sm);
+  margin-top: 0.1rem;
+  user-select: none;
+}
+
+.task-checkbox-wrapper:hover .custom-checkbox {
+  border-color: var(--ecotec-cyan);
+  box-shadow: 0 0 0 3px rgba(0, 168, 232, 0.15);
 }
 
 .custom-checkbox {

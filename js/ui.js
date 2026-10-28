@@ -123,15 +123,14 @@ export const ui = {
 
       card.innerHTML = `
         <div class="task-top-bar">
-          <div class="task-checkbox-wrapper">
+          <label class="task-checkbox-wrapper" title="${task.completed ? 'Marcar como pendiente' : 'Marcar como completada'}">
             <input 
               type="checkbox" 
               class="custom-checkbox task-check" 
               ${task.completed ? 'checked' : ''} 
-              title="${task.completed ? 'Marcar como pendiente' : 'Marcar como completada'}"
               aria-label="Estado de la tarea"
             >
-          </div>
+          </label>
           <span class="badge ${priorityClass} badge-top-bar">
             ● Prioridad ${task.priority}
           </span>
