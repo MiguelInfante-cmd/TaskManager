@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Informe Final - TaskManager Vanilla JS (Miguel Ángel Infante Mejía)</title>
@@ -44,6 +45,7 @@
       body {
         background: transparent;
       }
+
       .page {
         margin: 0;
         box-shadow: none;
@@ -51,6 +53,7 @@
         min-height: 100%;
         padding: 0;
       }
+
       .no-print {
         display: none !important;
       }
@@ -67,7 +70,7 @@
       align-items: center;
       justify-content: space-between;
       z-index: 999;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
     .btn-print {
@@ -246,7 +249,8 @@
       font-size: 8.5pt;
     }
 
-    table.data-table th, table.data-table td {
+    table.data-table th,
+    table.data-table td {
       border: 1px solid #cbd5e1;
       padding: 6px 10px;
       text-align: left;
@@ -289,6 +293,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Print action banner (hidden on paper) -->
@@ -316,7 +321,7 @@
 
       <div class="cover-container">
         <span class="cover-badge">Evaluación Práctica de JavaScript Vanilla (ES6+)</span>
-        
+
         <h1 class="main-title">
           TaskManager Pro: Aplicación Interactiva de Gestión de Tareas con Persistencia Offline y Consumo de APIs REST
         </h1>
@@ -327,10 +332,12 @@
             <span class="meta-value">Miguel Ángel Infante Mejía</span>
 
             <span class="meta-label">Perfil de GitHub:</span>
-            <span class="meta-value"><a href="https://github.com/MiguelInfante-cmd" target="_blank" style="color: #4f46e5; text-decoration: none;">github.com/MiguelInfante-cmd</a></span>
+            <span class="meta-value"><a href="https://github.com/MiguelInfante-cmd" target="_blank"
+                style="color: #4f46e5; text-decoration: none;">github.com/MiguelInfante-cmd</a></span>
 
             <span class="meta-label">Tecnologías:</span>
-            <span class="meta-value">JavaScript Vanilla ES6+ (Sin librerías ni frameworks), HTML5, CSS3, Web Storage API</span>
+            <span class="meta-value">JavaScript Vanilla ES6+ (Sin librerías ni frameworks), HTML5, CSS3, Web Storage
+              API</span>
 
             <span class="meta-label">Tema Investigado:</span>
             <span class="meta-value">Opción A: Arquitectura Modular ES6 & Patrón Observador (Custom Events)</span>
@@ -351,7 +358,11 @@
         <div class="executive-summary">
           <strong style="color: #065f46; font-size: 9.5pt;">Resumen Ejecutivo:</strong>
           <p style="font-size: 9pt; margin: 4px 0 0 0; color: #047857;">
-            El presente informe documenta el diseño y desarrollo de una aplicación web offline-first para la gestión de tareas (TaskManager). La solución fue elaborada en JavaScript Vanilla sin dependencias externas, cumpliendo con operaciones CRUD completas, validación estricta de campos vacíos, consumo asíncrono con control de duplicados desde la API REST de JSONPlaceholder, filtros de estado dinámicos, ordenamiento multidimensional mediante funciones comparadoras y reactividad visual en tiempo real en el dashboard de métricas.
+            El presente informe documenta el diseño y desarrollo de una aplicación web offline-first para la gestión de
+            tareas (TaskManager). La solución fue elaborada en JavaScript Vanilla sin dependencias externas, cumpliendo
+            con operaciones CRUD completas, validación estricta de campos vacíos, consumo asíncrono con control de
+            duplicados desde la API REST de JSONPlaceholder, filtros de estado dinámicos, ordenamiento multidimensional
+            mediante funciones comparadoras y reactividad visual en tiempo real en el dashboard de métricas.
           </p>
         </div>
       </div>
@@ -375,7 +386,10 @@
 
       <h2 class="section-title">1. Investigación: Arquitectura Modular ES6 (Opción A)</h2>
       <p>
-        Para garantizar la mantenibilidad, escalabilidad y separación de responsabilidades exigidas en el software moderno, se investigó e implementó la <strong>Arquitectura Modular nativa de ECMAScript 6 (ES6 Modules)</strong> empleando las sentencias <span class="badge-code">import</span> y <span class="badge-code">export</span> sobre el navegador sin requerir empaquetadores como Webpack o Vite.
+        Para garantizar la mantenibilidad, escalabilidad y separación de responsabilidades exigidas en el software
+        moderno, se investigó e implementó la <strong>Arquitectura Modular nativa de ECMAScript 6 (ES6 Modules)</strong>
+        empleando las sentencias <span class="badge-code">import</span> y <span class="badge-code">export</span> sobre
+        el navegador sin requerir empaquetadores como Webpack o Vite.
       </p>
 
       <h3 class="sub-title">1.1 Descomposición y Responsabilidad de Módulos</h3>
@@ -391,46 +405,63 @@
           <tr>
             <td><strong>Storage Service</strong></td>
             <td><span class="badge-code">js/storageService.js</span></td>
-            <td>Abstracción de <span class="badge-code">localStorage</span>, serialización/deserialización JSON y manejo de excepciones de cuota.</td>
+            <td>Abstracción de <span class="badge-code">localStorage</span>, serialización/deserialización JSON y manejo
+              de excepciones de cuota.</td>
           </tr>
           <tr>
             <td><strong>API Service</strong></td>
             <td><span class="badge-code">js/apiService.js</span></td>
-            <td>Consumo asíncrono mediante <span class="badge-code">fetch()</span> y <span class="badge-code">async/await</span> desde JSONPlaceholder, normalización y detección de red.</td>
+            <td>Consumo asíncrono mediante <span class="badge-code">fetch()</span> y <span
+                class="badge-code">async/await</span> desde JSONPlaceholder, normalización y detección de red.</td>
           </tr>
           <tr>
             <td><strong>Task Manager</strong></td>
             <td><span class="badge-code">js/taskManager.js</span></td>
-            <td>Lógica de negocio, CRUD estricto, algoritmos de filtrado, cálculo de métricas y ordenamiento con <span class="badge-code">sort()</span>.</td>
+            <td>Lógica de negocio, CRUD estricto, algoritmos de filtrado, cálculo de métricas y ordenamiento con <span
+                class="badge-code">sort()</span>.</td>
           </tr>
           <tr>
             <td><strong>UI Service</strong></td>
             <td><span class="badge-code">js/ui.js</span></td>
-            <td>Manipulación limpia del DOM, renderizado reactivo, modales accesibles y notificaciones contextuales <em>Toast</em>.</td>
+            <td>Manipulación limpia del DOM, renderizado reactivo, modales accesibles y notificaciones contextuales
+              <em>Toast</em>.</td>
           </tr>
           <tr>
             <td><strong>Event Bus</strong></td>
             <td><span class="badge-code">js/events.js</span></td>
-            <td>Desacoplamiento mediante <span class="badge-code">CustomEvent</span> para comunicación reactiva entre capas.</td>
+            <td>Desacoplamiento mediante <span class="badge-code">CustomEvent</span> para comunicación reactiva entre
+              capas.</td>
           </tr>
         </tbody>
       </table>
 
       <h2 class="section-title">2. Patrón Observador con Custom Events (Opción B Integrada)</h2>
       <p>
-        Como valor agregado a la arquitectura, se implementó el <strong>Patrón Observador</strong> utilizando la API nativa <span class="badge-code">CustomEvent</span> de JavaScript. Cuando cualquier operación modifica el estado de las tareas (creación, edición, borrado o sincronización), el gestor emite el evento personalizado <span class="badge-code">taskmanager:tasksUpdated</span> con el detalle de las métricas. El módulo visual escucha este evento y re-renderiza el Dashboard y la barra de progreso automáticamente, evitando el acoplamiento directo entre la lógica de negocio y la interfaz.
+        Como valor agregado a la arquitectura, se implementó el <strong>Patrón Observador</strong> utilizando la API
+        nativa <span class="badge-code">CustomEvent</span> de JavaScript. Cuando cualquier operación modifica el estado
+        de las tareas (creación, edición, borrado o sincronización), el gestor emite el evento personalizado <span
+          class="badge-code">taskmanager:tasksUpdated</span> con el detalle de las métricas. El módulo visual escucha
+        este evento y re-renderiza el Dashboard y la barra de progreso automáticamente, evitando el acoplamiento directo
+        entre la lógica de negocio y la interfaz.
       </p>
 
       <h2 class="section-title">3. Mecanismos Algorítmicos: Validación, Filtros y Ordenamiento</h2>
       <ul style="padding-left: 20px; font-size: 9pt; color: #334155; margin-bottom: 10px;">
         <li style="margin-bottom: 5px;">
-          <strong>Validación Estricta:</strong> Se intercepta el evento <span class="badge-code">submit</span> del formulario y el evento <span class="badge-code">input</span>. Se evalúa <span class="badge-code">title.trim().length >= 3</span>. Si el campo está vacío, se aplica retroalimentación visual con bordes rojos y alertas inline antes de permitir cualquier mutación.
+          <strong>Validación Estricta:</strong> Se intercepta el evento <span class="badge-code">submit</span> del
+          formulario y el evento <span class="badge-code">input</span>. Se evalúa <span
+            class="badge-code">title.trim().length >= 3</span>. Si el campo está vacío, se aplica retroalimentación
+          visual con bordes rojos y alertas inline antes de permitir cualquier mutación.
         </li>
         <li style="margin-bottom: 5px;">
-          <strong>Búsqueda en Tiempo Real:</strong> Se implementó búsqueda dinámica insensible a mayúsculas utilizando <span class="badge-code">toLowerCase()</span> e <span class="badge-code">includes()</span>, ejecutada en cada pulsación de tecla sobre el elemento <span class="badge-code">&lt;input id="searchInput"&gt;</span>.
+          <strong>Búsqueda en Tiempo Real:</strong> Se implementó búsqueda dinámica insensible a mayúsculas utilizando
+          <span class="badge-code">toLowerCase()</span> e <span class="badge-code">includes()</span>, ejecutada en cada
+          pulsación de tecla sobre el elemento <span class="badge-code">&lt;input id="searchInput"&gt;</span>.
         </li>
         <li>
-          <strong>Ordenamiento Multidimensional con <span class="badge-code">sort()</span>:</strong> Se programó una función comparadora personalizada que maneja pesos de prioridad (<span class="badge-code">Alta: 3, Media: 2, Baja: 1</span>) con un desempate cronológico secundario basado en <span class="badge-code">createdAt</span>.
+          <strong>Ordenamiento Multidimensional con <span class="badge-code">sort()</span>:</strong> Se programó una
+          función comparadora personalizada que maneja pesos de prioridad (<span class="badge-code">Alta: 3, Media: 2,
+            Baja: 1</span>) con un desempate cronológico secundario basado en <span class="badge-code">createdAt</span>.
         </li>
       </ul>
     </div>
@@ -453,7 +484,10 @@
 
       <h2 class="section-title">4. Demostración de Persistencia en DevTools (Application > Local Storage)</h2>
       <p>
-        La persistencia se implementó con serialización estricta mediante <span class="badge-code">JSON.stringify()</span> y recuperación con <span class="badge-code">JSON.parse()</span>. A continuación se evidencia la estructura del almacenamiento local inspeccionado desde el panel <strong>DevTools > Application > Storage > Local Storage</strong>:
+        La persistencia se implementó con serialización estricta mediante <span
+          class="badge-code">JSON.stringify()</span> y recuperación con <span class="badge-code">JSON.parse()</span>. A
+        continuación se evidencia la estructura del almacenamiento local inspeccionado desde el panel <strong>DevTools >
+          Application > Storage > Local Storage</strong>:
       </p>
 
       <div class="screenshot-box">
@@ -466,7 +500,10 @@
         </div>
         <div class="storage-key-row">
           <span class="storage-key-name">Value (Registro JSON):</span>
-          <span class="storage-key-val">[{"id":"task_1793164301","title":"Preparar informe final de Sistemas Web","description":"","priority":"Alta","completed":true,"createdAt":"2026-10-28T05:11:41.148Z","source":"local"},{"id":"api_1","title":"Delectus aut autem","description":"Tarea importada desde JSONPlaceholder REST API...","priority":"Alta","completed":false,"createdAt":"2026-10-28T05:09:17.000Z","source":"api"}...]</span>
+          <span class="storage-key-val">[{"id":"task_1793164301","title":"Preparar informe final de Sistemas
+            Web","description":"","priority":"Alta","completed":true,"createdAt":"2026-10-28T05:11:41.148Z","source":"local"},{"id":"api_1","title":"Delectus
+            aut autem","description":"Tarea importada desde JSONPlaceholder REST
+            API...","priority":"Alta","completed":false,"createdAt":"2026-10-28T05:09:17.000Z","source":"api"}...]</span>
         </div>
       </div>
 
@@ -482,7 +519,8 @@
         <tbody>
           <tr>
             <td><strong>Carga Inicial sin Datos</strong></td>
-            <td>Consulta automática a JSONPlaceholder e inserción en <span class="badge-code">localStorage</span> sin duplicados.</td>
+            <td>Consulta automática a JSONPlaceholder e inserción en <span class="badge-code">localStorage</span> sin
+              duplicados.</td>
             <td style="color: #10b981; font-weight: 700;">EXITOSO</td>
           </tr>
           <tr>
@@ -505,13 +543,19 @@
 
       <h2 class="section-title">6. Conclusiones</h2>
       <p>
-        1. <strong>Solidez de JavaScript Vanilla:</strong> Se comprobó que el estándar moderno de JavaScript (ES6+) cuenta con todas las herramientas nativas necesarias (módulos, manipulación del DOM, eventos personalizados y API Fetch) para desarrollar sistemas complejos sin sobrecargar el navegador con dependencias externas.
+        1. <strong>Solidez de JavaScript Vanilla:</strong> Se comprobó que el estándar moderno de JavaScript (ES6+)
+        cuenta con todas las herramientas nativas necesarias (módulos, manipulación del DOM, eventos personalizados y
+        API Fetch) para desarrollar sistemas complejos sin sobrecargar el navegador con dependencias externas.
       </p>
       <p>
-        2. <strong>Estrategia Offline-First:</strong> El uso disciplinado de <span class="badge-code">Web Storage API</span> combinado con detección de eventos de red permite brindar una experiencia de usuario fluida y resiliente, eliminando la dependencia crítica de la conexión a internet para la operatividad básica.
+        2. <strong>Estrategia Offline-First:</strong> El uso disciplinado de <span class="badge-code">Web Storage
+          API</span> combinado con detección de eventos de red permite brindar una experiencia de usuario fluida y
+        resiliente, eliminando la dependencia crítica de la conexión a internet para la operatividad básica.
       </p>
       <p>
-        3. <strong>Buenas Prácticas en el Control de Versiones:</strong> El desarrollo estructurado por fases y respaldado por un historial de commits significativo en GitHub garantiza la autoría real del código y la transparencia metodológica en la integración de Inteligencia Artificial como herramienta de apoyo.
+        3. <strong>Buenas Prácticas en el Control de Versiones:</strong> El desarrollo estructurado por fases y
+        respaldado por un historial de commits significativo en GitHub garantiza la autoría real del código y la
+        transparencia metodológica en la integración de Inteligencia Artificial como herramienta de apoyo.
       </p>
     </div>
 
@@ -522,4 +566,5 @@
   </div>
 
 </body>
+
 </html>

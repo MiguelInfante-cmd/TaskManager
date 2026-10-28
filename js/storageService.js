@@ -59,6 +59,48 @@ export const storageService = {
   },
 
   /**
+   * Limpia y migra tareas que contengan texto en latín a títulos y descripciones coherentes en español
+   * @param {Array<Object>} coherentTemplates - Plantillas coherentes de apiService
+   */
+  migrateLatinTasks(coherentTemplates) {
+    try {
+      const currentTasks = this.getTasks();
+      if (!currentTasks || currentTasks.length === 0) return;
+
+      const latinKeywords = [
+        'delectus', 'autem', 'quis ut', 'nam facilis', 'molestiae', 'perspiciatis', 
+        'illo est', 'vero rerum', 'ipsa repellendus', 'fugiat', 'ullam', 'dolor', 
+        'temporibus', 'soluta', 'laboriosam', 'suscipit'
+      ];
+
+      let modified = false;
+      const updated = currentTasks.map((task, index) => {
+        const titleLower = (task.title || '').toLowerCase();
+        const descLower = (task.description || '').toLowerCase();
+        const isLatin = latinKeywords.some(kw => titleLower.includes(kw)) || descLower.includes('(id original: #');
+
+        if (isLatin && Array.isArray(coherentTemplates) && coherentTemplates.length > 0) {
+          const template = coherentTemplates[index % coherentTemplates.length];
+          modified = true;
+          return {
+            ...task,
+            title: template.title,
+            description: template.description
+          };
+        }
+        return task;
+      });
+
+      if (modified) {
+        this.saveTasks(updated);
+        console.log('[storageService] Migración exitosa de tareas a títulos y descripciones coherentes en español.');
+      }
+    } catch (err) {
+      console.warn('[storageService] Error durante la migración de tareas:', err);
+    }
+  },
+
+  /**
    * Borra todas las tareas del localStorage
    */
   clear() {

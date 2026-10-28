@@ -726,10 +726,17 @@ body {
 
 .tasks-list.view-list .task-top-bar {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
   flex-shrink: 0;
+  margin-top: 0.15rem;
+}
+
+.tasks-list.view-list .task-top-bar .badge-top-bar {
+  display: none;
+}
+
+.tasks-list.view-list .task-meta .badge-meta-inline {
+  display: inline-flex;
 }
 
 .tasks-list.view-list .task-content {
@@ -761,6 +768,14 @@ body {
   margin-bottom: 0.85rem;
   padding-bottom: 0.65rem;
   border-bottom: 1px solid #f1f5f9;
+}
+
+.tasks-list.view-grid .task-top-bar .badge-top-bar {
+  display: inline-flex;
+}
+
+.tasks-list.view-grid .task-meta .badge-meta-inline {
+  display: none;
 }
 
 .tasks-list.view-grid .task-content {

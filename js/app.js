@@ -8,7 +8,7 @@
 
 import { taskManager } from './taskManager.js';
 import { storageService } from './storageService.js';
-import { apiService } from './apiService.js';
+import { apiService, COHERENT_TASKS } from './apiService.js';
 import { ui } from './ui.js';
 import { onTasksUpdated, emitNetworkStatus } from './events.js';
 
@@ -55,6 +55,9 @@ class App {
    */
   async loadInitialData() {
     try {
+      // Migrar preventivamente cualquier tarea en latín existente en LocalStorage a español coherente
+      storageService.migrateLatinTasks(COHERENT_TASKS);
+
       if (storageService.hasTasks()) {
         console.log('[App] Se encontraron datos existentes en LocalStorage.');
         taskManager.init();

@@ -128,7 +128,7 @@ export const ui = {
               aria-label="Estado de la tarea"
             >
           </div>
-          <span class="badge ${priorityClass}">
+          <span class="badge ${priorityClass} badge-top-bar">
             ● Prioridad ${task.priority}
           </span>
         </div>
@@ -138,6 +138,9 @@ export const ui = {
           ${task.description ? `<p class="task-description">${this.escapeHTML(task.description)}</p>` : ''}
           
           <div class="task-meta">
+            <span class="badge ${priorityClass} badge-meta-inline">
+              ● Prioridad ${task.priority}
+            </span>
             <span class="badge-date">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
