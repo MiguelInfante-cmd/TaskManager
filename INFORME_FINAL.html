@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Informe Final - TaskManager Vanilla JS (Miguel Ángel Infante Mejía)</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    @page {
+      size: A4;
+      margin: 15mm 20mm;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      color: #1e293b;
+      background: #f8fafc;
+      line-height: 1.55;
+      font-size: 10pt;
+    }
+
+    .page {
+      background: #ffffff;
+      width: 210mm;
+      min-height: 297mm;
+      margin: 20px auto;
+      padding: 22mm 22mm;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      position: relative;
+      page-break-after: always;
+      break-after: page;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    @media print {
+      body {
+        background: transparent;
+      }
+      .page {
+        margin: 0;
+        box-shadow: none;
+        width: 100%;
+        min-height: 100%;
+        padding: 0;
+      }
+      .no-print {
+        display: none !important;
+      }
+    }
+
+    /* Print toolbar */
+    .print-bar {
+      position: sticky;
+      top: 0;
+      background: #0f172a;
+      color: #fff;
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+
+    .btn-print {
+      background: #4f46e5;
+      color: #fff;
+      border: none;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-print:hover {
+      background: #4338ca;
+    }
+
+    /* Typography & Layout */
+    .header-bar {
+      border-bottom: 2px solid #4f46e5;
+      padding-bottom: 15px;
+      margin-bottom: 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .institution-name {
+      font-size: 11pt;
+      font-weight: 700;
+      color: #4f46e5;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .doc-meta {
+      font-size: 8.5pt;
+      color: #64748b;
+      text-align: right;
+    }
+
+    .page-footer {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 10px;
+      margin-top: 20px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 8pt;
+      color: #94a3b8;
+    }
+
+    h1.main-title {
+      font-size: 20pt;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.25;
+      margin-bottom: 15px;
+    }
+
+    h2.section-title {
+      font-size: 13pt;
+      font-weight: 700;
+      color: #1e293b;
+      border-left: 4px solid #4f46e5;
+      padding-left: 10px;
+      margin: 18px 0 10px 0;
+    }
+
+    h3.sub-title {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #334155;
+      margin: 12px 0 6px 0;
+    }
+
+    p {
+      margin-bottom: 10px;
+      color: #334155;
+      text-align: justify;
+    }
+
+    /* Cover Styling */
+    .cover-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      flex: 1;
+      padding: 10px 0;
+    }
+
+    .cover-badge {
+      display: inline-block;
+      background: #eef2ff;
+      color: #4f46e5;
+      font-size: 9pt;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 9999px;
+      margin-bottom: 15px;
+      width: fit-content;
+      border: 1px solid #c7d2fe;
+    }
+
+    .cover-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 18px;
+      margin: 20px 0;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      row-gap: 8px;
+      font-size: 9.5pt;
+    }
+
+    .meta-label {
+      font-weight: 600;
+      color: #64748b;
+    }
+
+    .meta-value {
+      font-weight: 500;
+      color: #0f172a;
+    }
+
+    .repo-box {
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 14px 18px;
+      border-radius: 8px;
+      margin: 15px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      word-break: break-all;
+    }
+
+    .repo-box a {
+      color: #818cf8;
+      text-decoration: none;
+      font-weight: 600;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9pt;
+    }
+
+    .executive-summary {
+      background: #fff;
+      border-left: 3px solid #10b981;
+      padding: 12px 16px;
+      border-radius: 4px;
+      background: #f0fdf4;
+      margin-top: 15px;
+    }
+
+    /* Content styling */
+    .badge-code {
+      font-family: 'JetBrains Mono', monospace;
+      background: #f1f5f9;
+      color: #0f172a;
+      padding: 2px 5px;
+      border-radius: 4px;
+      font-size: 8.5pt;
+      border: 1px solid #e2e8f0;
+    }
+
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+      font-size: 8.5pt;
+    }
+
+    table.data-table th, table.data-table td {
+      border: 1px solid #cbd5e1;
+      padding: 6px 10px;
+      text-align: left;
+    }
+
+    table.data-table th {
+      background: #f1f5f9;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .screenshot-box {
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 12px 0;
+      background: #0f172a;
+      color: #f8fafc;
+      padding: 12px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 8pt;
+    }
+
+    .storage-key-row {
+      display: flex;
+      gap: 10px;
+      border-bottom: 1px solid #334155;
+      padding: 6px 0;
+    }
+
+    .storage-key-name {
+      color: #38bdf8;
+      font-weight: 600;
+      min-width: 160px;
+    }
+
+    .storage-key-val {
+      color: #a7f3d0;
+      word-break: break-all;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Print action banner (hidden on paper) -->
+  <div class="print-bar no-print">
+    <div>
+      <strong>Informe Académico Final: TaskManager Pro (Vanilla JS)</strong> &bull; Máximo 3 Páginas
+    </div>
+    <button class="btn-print" onclick="window.print()">
+      🖨️ Imprimir / Guardar como PDF (Ctrl + P)
+    </button>
+  </div>
+
+  <!-- ==========================================================================
+       PÁGINA 1: PORTADA Y FICHA TÉCNICA
+       ========================================================================== -->
+  <div class="page">
+    <div>
+      <div class="header-bar">
+        <span class="institution-name">Universidad / Facultad de Ciencias Matemáticas y Físicas</span>
+        <span class="doc-meta">Materia: Sistemas Web / Programación Web<br>Actividad: Deber 2</span>
+      </div>
+
+      <div class="cover-container">
+        <span class="cover-badge">Evaluación Práctica de JavaScript Vanilla (ES6+)</span>
+        
+        <h1 class="main-title">
+          TaskManager Pro: Aplicación Interactiva de Gestión de Tareas con Persistencia Offline y Consumo de APIs REST
+        </h1>
+
+        <div class="cover-card">
+          <div class="meta-grid">
+            <span class="meta-label">Estudiante:</span>
+            <span class="meta-value">Miguel Ángel Infante Mejía</span>
+
+            <span class="meta-label">Perfil de GitHub:</span>
+            <span class="meta-value"><a href="https://github.com/MiguelInfante-cmd" target="_blank" style="color: #4f46e5; text-decoration: none;">github.com/MiguelInfante-cmd</a></span>
+
+            <span class="meta-label">Tecnologías:</span>
+            <span class="meta-value">JavaScript Vanilla ES6+ (Sin librerías ni frameworks), HTML5, CSS3, Web Storage API</span>
+
+            <span class="meta-label">Tema Investigado:</span>
+            <span class="meta-value">Opción A: Arquitectura Modular ES6 & Patrón Observador (Custom Events)</span>
+
+            <span class="meta-label">Fecha de Entrega:</span>
+            <span class="meta-value">Octubre 2026</span>
+          </div>
+        </div>
+
+        <h3 class="sub-title">Repositorio Público del Proyecto:</h3>
+        <div class="repo-box">
+          <span>URL GitHub:</span>
+          <a href="https://github.com/MiguelInfante-cmd/TaskManager" target="_blank">
+            https://github.com/MiguelInfante-cmd/TaskManager
+          </a>
+        </div>
+
+        <div class="executive-summary">
+          <strong style="color: #065f46; font-size: 9.5pt;">Resumen Ejecutivo:</strong>
+          <p style="font-size: 9pt; margin: 4px 0 0 0; color: #047857;">
+            El presente informe documenta el diseño y desarrollo de una aplicación web offline-first para la gestión de tareas (TaskManager). La solución fue elaborada en JavaScript Vanilla sin dependencias externas, cumpliendo con operaciones CRUD completas, validación estricta de campos vacíos, consumo asíncrono con control de duplicados desde la API REST de JSONPlaceholder, filtros de estado dinámicos, ordenamiento multidimensional mediante funciones comparadoras y reactividad visual en tiempo real en el dashboard de métricas.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="page-footer">
+      <span>Informe Técnico &bull; TaskManager Vanilla JS</span>
+      <span>Página 1 de 3</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PÁGINA 2: COMPONENTE DE INVESTIGACIÓN TÉCNICA Y ARQUITECTURA
+       ========================================================================== -->
+  <div class="page">
+    <div>
+      <div class="header-bar">
+        <span class="institution-name">Componente de Investigación Técnica</span>
+        <span class="doc-meta">Estudiante: Miguel Ángel Infante Mejía</span>
+      </div>
+
+      <h2 class="section-title">1. Investigación: Arquitectura Modular ES6 (Opción A)</h2>
+      <p>
+        Para garantizar la mantenibilidad, escalabilidad y separación de responsabilidades exigidas en el software moderno, se investigó e implementó la <strong>Arquitectura Modular nativa de ECMAScript 6 (ES6 Modules)</strong> empleando las sentencias <span class="badge-code">import</span> y <span class="badge-code">export</span> sobre el navegador sin requerir empaquetadores como Webpack o Vite.
+      </p>
+
+      <h3 class="sub-title">1.1 Descomposición y Responsabilidad de Módulos</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Módulo</th>
+            <th>Archivo</th>
+            <th>Responsabilidad Principal</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Storage Service</strong></td>
+            <td><span class="badge-code">js/storageService.js</span></td>
+            <td>Abstracción de <span class="badge-code">localStorage</span>, serialización/deserialización JSON y manejo de excepciones de cuota.</td>
+          </tr>
+          <tr>
+            <td><strong>API Service</strong></td>
+            <td><span class="badge-code">js/apiService.js</span></td>
+            <td>Consumo asíncrono mediante <span class="badge-code">fetch()</span> y <span class="badge-code">async/await</span> desde JSONPlaceholder, normalización y detección de red.</td>
+          </tr>
+          <tr>
+            <td><strong>Task Manager</strong></td>
+            <td><span class="badge-code">js/taskManager.js</span></td>
+            <td>Lógica de negocio, CRUD estricto, algoritmos de filtrado, cálculo de métricas y ordenamiento con <span class="badge-code">sort()</span>.</td>
+          </tr>
+          <tr>
+            <td><strong>UI Service</strong></td>
+            <td><span class="badge-code">js/ui.js</span></td>
+            <td>Manipulación limpia del DOM, renderizado reactivo, modales accesibles y notificaciones contextuales <em>Toast</em>.</td>
+          </tr>
+          <tr>
+            <td><strong>Event Bus</strong></td>
+            <td><span class="badge-code">js/events.js</span></td>
+            <td>Desacoplamiento mediante <span class="badge-code">CustomEvent</span> para comunicación reactiva entre capas.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title">2. Patrón Observador con Custom Events (Opción B Integrada)</h2>
+      <p>
+        Como valor agregado a la arquitectura, se implementó el <strong>Patrón Observador</strong> utilizando la API nativa <span class="badge-code">CustomEvent</span> de JavaScript. Cuando cualquier operación modifica el estado de las tareas (creación, edición, borrado o sincronización), el gestor emite el evento personalizado <span class="badge-code">taskmanager:tasksUpdated</span> con el detalle de las métricas. El módulo visual escucha este evento y re-renderiza el Dashboard y la barra de progreso automáticamente, evitando el acoplamiento directo entre la lógica de negocio y la interfaz.
+      </p>
+
+      <h2 class="section-title">3. Mecanismos Algorítmicos: Validación, Filtros y Ordenamiento</h2>
+      <ul style="padding-left: 20px; font-size: 9pt; color: #334155; margin-bottom: 10px;">
+        <li style="margin-bottom: 5px;">
+          <strong>Validación Estricta:</strong> Se intercepta el evento <span class="badge-code">submit</span> del formulario y el evento <span class="badge-code">input</span>. Se evalúa <span class="badge-code">title.trim().length >= 3</span>. Si el campo está vacío, se aplica retroalimentación visual con bordes rojos y alertas inline antes de permitir cualquier mutación.
+        </li>
+        <li style="margin-bottom: 5px;">
+          <strong>Búsqueda en Tiempo Real:</strong> Se implementó búsqueda dinámica insensible a mayúsculas utilizando <span class="badge-code">toLowerCase()</span> e <span class="badge-code">includes()</span>, ejecutada en cada pulsación de tecla sobre el elemento <span class="badge-code">&lt;input id="searchInput"&gt;</span>.
+        </li>
+        <li>
+          <strong>Ordenamiento Multidimensional con <span class="badge-code">sort()</span>:</strong> Se programó una función comparadora personalizada que maneja pesos de prioridad (<span class="badge-code">Alta: 3, Media: 2, Baja: 1</span>) con un desempate cronológico secundario basado en <span class="badge-code">createdAt</span>.
+        </li>
+      </ul>
+    </div>
+
+    <div class="page-footer">
+      <span>Informe Técnico &bull; TaskManager Vanilla JS</span>
+      <span>Página 2 de 3</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       PÁGINA 3: PERSISTENCIA, PRUEBAS Y CONCLUSIONES
+       ========================================================================== -->
+  <div class="page">
+    <div>
+      <div class="header-bar">
+        <span class="institution-name">Persistencia Local & Evidencias</span>
+        <span class="doc-meta">Estudiante: Miguel Ángel Infante Mejía</span>
+      </div>
+
+      <h2 class="section-title">4. Demostración de Persistencia en DevTools (Application > Local Storage)</h2>
+      <p>
+        La persistencia se implementó con serialización estricta mediante <span class="badge-code">JSON.stringify()</span> y recuperación con <span class="badge-code">JSON.parse()</span>. A continuación se evidencia la estructura del almacenamiento local inspeccionado desde el panel <strong>DevTools > Application > Storage > Local Storage</strong>:
+      </p>
+
+      <div class="screenshot-box">
+        <div style="color: #94a3b8; margin-bottom: 8px; border-bottom: 1px solid #334155; padding-bottom: 4px;">
+          <strong>Panel: Chrome DevTools &gt; Application &gt; Local Storage &gt; http://localhost:8080</strong>
+        </div>
+        <div class="storage-key-row">
+          <span class="storage-key-name">Key (Clave):</span>
+          <span class="storage-key-val">taskmanager_tasks_v1</span>
+        </div>
+        <div class="storage-key-row">
+          <span class="storage-key-name">Value (Registro JSON):</span>
+          <span class="storage-key-val">[{"id":"task_1793164301","title":"Preparar informe final de Sistemas Web","description":"","priority":"Alta","completed":true,"createdAt":"2026-10-28T05:11:41.148Z","source":"local"},{"id":"api_1","title":"Delectus aut autem","description":"Tarea importada desde JSONPlaceholder REST API...","priority":"Alta","completed":false,"createdAt":"2026-10-28T05:09:17.000Z","source":"api"}...]</span>
+        </div>
+      </div>
+
+      <h2 class="section-title">5. Resultados de Pruebas Funcionales y Resiliencia Offline</h2>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Prueba Realizada</th>
+            <th>Comportamiento Observado</th>
+            <th>Resultado</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Carga Inicial sin Datos</strong></td>
+            <td>Consulta automática a JSONPlaceholder e inserción en <span class="badge-code">localStorage</span> sin duplicados.</td>
+            <td style="color: #10b981; font-weight: 700;">EXITOSO</td>
+          </tr>
+          <tr>
+            <td><strong>Operaciones CRUD y Validación</strong></td>
+            <td>Rechazo de campos vacíos; creación, edición y borrado con persistencia instantánea.</td>
+            <td style="color: #10b981; font-weight: 700;">EXITOSO</td>
+          </tr>
+          <tr>
+            <td><strong>Búsqueda y Filtros en Vivo</strong></td>
+            <td>Filtrado instantáneo por estado (Todas/Pendientes/Completadas) y búsqueda por texto.</td>
+            <td style="color: #10b981; font-weight: 700;">EXITOSO</td>
+          </tr>
+          <tr>
+            <td><strong>Simulación de Modo Offline</strong></td>
+            <td>Detección visual ("Modo Offline"), retención de datos tras recargar y prevención de caídas.</td>
+            <td style="color: #10b981; font-weight: 700;">EXITOSO</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2 class="section-title">6. Conclusiones</h2>
+      <p>
+        1. <strong>Solidez de JavaScript Vanilla:</strong> Se comprobó que el estándar moderno de JavaScript (ES6+) cuenta con todas las herramientas nativas necesarias (módulos, manipulación del DOM, eventos personalizados y API Fetch) para desarrollar sistemas complejos sin sobrecargar el navegador con dependencias externas.
+      </p>
+      <p>
+        2. <strong>Estrategia Offline-First:</strong> El uso disciplinado de <span class="badge-code">Web Storage API</span> combinado con detección de eventos de red permite brindar una experiencia de usuario fluida y resiliente, eliminando la dependencia crítica de la conexión a internet para la operatividad básica.
+      </p>
+      <p>
+        3. <strong>Buenas Prácticas en el Control de Versiones:</strong> El desarrollo estructurado por fases y respaldado por un historial de commits significativo en GitHub garantiza la autoría real del código y la transparencia metodológica en la integración de Inteligencia Artificial como herramienta de apoyo.
+      </p>
+    </div>
+
+    <div class="page-footer">
+      <span>Informe Técnico &bull; TaskManager Vanilla JS</span>
+      <span>Página 3 de 3</span>
+    </div>
+  </div>
+
+</body>
+</html>
