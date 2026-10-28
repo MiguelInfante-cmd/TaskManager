@@ -187,12 +187,20 @@ export class TaskManager {
     const existingIds = new Set(this.tasks.map(t => t.id));
 
     newTasks.forEach(item => {
-      const normalizedTitle = (item.title || '').toLowerCase().trim();
-      if (!existingTitles.has(normalizedTitle) && !existingIds.has(item.id)) {
-        this.tasks.push(item);
-        existingTitles.add(normalizedTitle);
-        existingIds.add(item.id);
+      const existingIndex = this.tasks.findIndex(t => t.id === item.id);
+      if (existingIndex !== -1) {
+        // Actualizar título y descripción a la versión coherente si venía de la API
+        this.tasks[existingIndex].title = item.title;
+        this.tasks[existingIndex].description = item.description;
         addedCount++;
+      } else {
+        const normalizedTitle = (item.title || '').toLowerCase().trim();
+        if (!existingTitles.has(normalizedTitle) && !existingIds.has(item.id)) {
+          this.tasks.push(item);
+          existingTitles.add(normalizedTitle);
+          existingIds.add(item.id);
+          addedCount++;
+        }
       }
     });
 

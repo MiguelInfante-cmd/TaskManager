@@ -56,14 +56,14 @@ class App {
   async loadInitialData() {
     try {
       // Migrar preventivamente cualquier tarea en latín existente en LocalStorage a español coherente
-      storageService.migrateLatinTasks(COHERENT_TASKS);
+      storageService.enforceCoherentTasks(COHERENT_TASKS);
 
       if (storageService.hasTasks()) {
         console.log('[App] Se encontraron datos existentes en LocalStorage.');
         taskManager.init();
         ui.showToast(
           'Persistencia Local Activa',
-          'Tus tareas se recuperaron exitosamente desde LocalStorage (funcional offline).',
+          'Tus tareas se recuperaron exitosamente desde LocalStorage.',
           'info'
         );
       } else {
@@ -323,22 +323,15 @@ class App {
       syncApiBtn.disabled = true;
       syncApiBtn.innerHTML = `<span>Cargando...</span>`;
 
-      const apiTasks = await apiService.fetchInitialTasks(15);
-      const importedCount = taskManager.importTasksWithoutDuplicates(apiTasks);
+      const apiTasks = await apiService.fetchInitialTasks(12);
+      taskManager.importTasksWithoutDuplicates(apiTasks);
+      storageService.enforceCoherentTasks(COHERENT_TASKS);
 
-      if (importedCount > 0) {
-        ui.showToast(
-          'Sincronización Exitosa',
-          `Se importaron ${importedCount} tareas nuevas desde JSONPlaceholder sin duplicados.`,
-          'success'
-        );
-      } else {
-        ui.showToast(
-          'Sin Nuevas Tareas',
-          'Todas las tareas de la API ya existen en tu LocalStorage. No se duplicó ningún registro.',
-          'info'
-        );
-      }
+      ui.showToast(
+        'Sincronización Exitosa',
+        'Tareas de prueba sincronizadas con nombres y descripciones coherentes.',
+        'success'
+      );
 
       this.refreshView();
     } catch (error) {

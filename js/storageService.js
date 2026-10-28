@@ -6,7 +6,7 @@
  * @module storageService
  */
 
-const STORAGE_KEY = 'taskmanager_tasks_v1';
+const STORAGE_KEY = 'taskmanager_ecotec_tasks_v2';
 
 export const storageService = {
   /**
@@ -15,6 +15,11 @@ export const storageService = {
    */
   getTasks() {
     try {
+      // Limpiar versiones obsoletas con texto en latín si existen
+      if (localStorage.getItem('taskmanager_tasks_v1')) {
+        localStorage.removeItem('taskmanager_tasks_v1');
+      }
+
       const rawData = localStorage.getItem(STORAGE_KEY);
       if (!rawData) {
         return [];
@@ -59,29 +64,36 @@ export const storageService = {
   },
 
   /**
-   * Limpia y migra tareas que contengan texto en latín a títulos y descripciones coherentes en español
-   * @param {Array<Object>} coherentTemplates - Plantillas coherentes de apiService
+   * Limpia y asegura que todas las tareas tengan títulos y descripciones coherentes en español
+   * Reemplaza cualquier residuo en latín (delectus, quis ut, etc.) con plantillas oficiales
+   * @param {Array<Object>} coherentTemplates
    */
-  migrateLatinTasks(coherentTemplates) {
+  enforceCoherentTasks(coherentTemplates) {
     try {
-      const currentTasks = this.getTasks();
+      // Purgar claves antiguas
+      localStorage.removeItem('taskmanager_tasks_v1');
+
+      let currentTasks = this.getTasks();
+
+      // Si no hay tareas en la clave nueva, no hay nada que limpiar aún
       if (!currentTasks || currentTasks.length === 0) return;
 
       const latinKeywords = [
         'delectus', 'autem', 'quis ut', 'nam facilis', 'molestiae', 'perspiciatis', 
-        'illo est', 'vero rerum', 'ipsa repellendus', 'fugiat', 'ullam', 'dolor', 
-        'temporibus', 'soluta', 'laboriosam', 'suscipit'
+        'illo', 'vero', 'repellendus', 'fugiat', 'ullam', 'dolor', 
+        'tempora', 'soluta', 'laboriosam', 'suscipit', 'porro', 'veniam',
+        'voluptatem', 'expedita', 'consequatur'
       ];
 
-      let modified = false;
-      const updated = currentTasks.map((task, index) => {
+      let hasLatin = false;
+      const sanitized = currentTasks.map((task, index) => {
         const titleLower = (task.title || '').toLowerCase();
         const descLower = (task.description || '').toLowerCase();
-        const isLatin = latinKeywords.some(kw => titleLower.includes(kw)) || descLower.includes('(id original: #');
+        const matchesLatin = latinKeywords.some(kw => titleLower.includes(kw)) || descLower.includes('(id original: #');
 
-        if (isLatin && Array.isArray(coherentTemplates) && coherentTemplates.length > 0) {
+        if (matchesLatin || task.source === 'api') {
+          hasLatin = true;
           const template = coherentTemplates[index % coherentTemplates.length];
-          modified = true;
           return {
             ...task,
             title: template.title,
@@ -91,12 +103,12 @@ export const storageService = {
         return task;
       });
 
-      if (modified) {
-        this.saveTasks(updated);
-        console.log('[storageService] Migración exitosa de tareas a títulos y descripciones coherentes en español.');
+      if (hasLatin) {
+        this.saveTasks(sanitized);
+        console.log('[storageService] Tareas normalizadas exitosamente a español coherente.');
       }
     } catch (err) {
-      console.warn('[storageService] Error durante la migración de tareas:', err);
+      console.warn('[storageService] Error al sanitizar tareas:', err);
     }
   },
 
@@ -106,6 +118,7 @@ export const storageService = {
   clear() {
     try {
       localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('taskmanager_tasks_v1');
       return true;
     } catch (error) {
       console.error('[storageService] Error al limpiar localStorage:', error);
