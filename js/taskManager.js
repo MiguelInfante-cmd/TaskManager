@@ -175,6 +175,52 @@ export class TaskManager {
   }
 
   /**
+   * Marca todas las tareas registradas como completadas
+   * @returns {number} Cantidad de tareas modificadas
+   */
+  markAllCompleted() {
+    let changed = 0;
+    this.tasks.forEach(t => {
+      if (!t.completed) {
+        t.completed = true;
+        changed++;
+      }
+    });
+
+    if (changed > 0) {
+      storageService.saveTasks(this.tasks);
+      emitTasksUpdated({
+        action: 'markAll',
+        metrics: this.getMetrics()
+      });
+    }
+    return changed;
+  }
+
+  /**
+   * Desmarca todas las tareas registradas (las pasa a pendientes)
+   * @returns {number} Cantidad de tareas modificadas
+   */
+  unmarkAllTasks() {
+    let changed = 0;
+    this.tasks.forEach(t => {
+      if (t.completed) {
+        t.completed = false;
+        changed++;
+      }
+    });
+
+    if (changed > 0) {
+      storageService.saveTasks(this.tasks);
+      emitTasksUpdated({
+        action: 'unmarkAll',
+        metrics: this.getMetrics()
+      });
+    }
+    return changed;
+  }
+
+  /**
    * Importa tareas desde una fuente externa (API) sin duplicar registros
    * @param {Array<Object>} newTasks
    * @returns {number} Cantidad de tareas nuevas agregadas

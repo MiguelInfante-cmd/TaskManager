@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   
   <!-- CSS Design System -->
-  <link rel="stylesheet" href="css/styles.css?v=2.2">
+  <link rel="stylesheet" href="css/styles.css?v=2.3">
 </head>
 <body>
   <div class="app-container">
@@ -157,6 +157,23 @@
             </button>
             <button class="filter-btn" data-filter="completed">
               Completadas <span class="filter-badge" id="badgeCompleted">0</span>
+            </button>
+          </div>
+
+          <!-- Bulk Actions: Marcar / Desmarcar todas -->
+          <div class="bulk-actions-group" role="group" aria-label="Acciones masivas de tareas">
+            <button id="markAllBtn" class="btn-bulk" title="Marcar todas las tareas como completadas">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>Marcar todas</span>
+            </button>
+            <button id="unmarkAllBtn" class="btn-bulk" title="Desmarcar todas las tareas (pasar a pendientes)">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+              </svg>
+              <span>Desmarcar todas</span>
             </button>
           </div>
 
@@ -330,6 +347,6 @@
   <div id="toastContainer" class="toast-container" aria-live="polite"></div>
 
   <!-- APPLICATION ENTRY POINT (ES6 MODULES) -->
-  <script type="module" src="js/app.js?v=2.2"></script>
+  <script type="module" src="js/app.js?v=2.3"></script>
 </body>
 </html>

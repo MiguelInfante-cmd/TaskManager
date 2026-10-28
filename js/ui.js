@@ -35,6 +35,10 @@ export const ui = {
     viewListBtn: document.getElementById('viewListBtn'),
     viewGridBtn: document.getElementById('viewGridBtn'),
 
+    // Acciones masivas
+    markAllBtn: document.getElementById('markAllBtn'),
+    unmarkAllBtn: document.getElementById('unmarkAllBtn'),
+
     // Lista de tareas
     tasksList: document.getElementById('tasksList'),
     visibleTasksCount: document.getElementById('visibleTasksCount'),

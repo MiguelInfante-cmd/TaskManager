@@ -133,8 +133,35 @@ class App {
       closeDeleteModalBtn,
       cancelDeleteBtn,
       viewListBtn,
-      viewGridBtn
+      viewGridBtn,
+      markAllBtn,
+      unmarkAllBtn
     } = ui.elements;
+
+    // --- Acciones Masivas (Marcar / Desmarcar todas) ---
+    if (markAllBtn) {
+      markAllBtn.addEventListener('click', () => {
+        const count = taskManager.markAllCompleted();
+        if (count > 0) {
+          ui.showToast('Tareas Completadas', `Se marcaron ${count} tareas como completadas.`, 'success');
+        } else {
+          ui.showToast('Información', 'Todas las tareas ya estaban completadas.', 'info');
+        }
+        this.refreshView();
+      });
+    }
+
+    if (unmarkAllBtn) {
+      unmarkAllBtn.addEventListener('click', () => {
+        const count = taskManager.unmarkAllTasks();
+        if (count > 0) {
+          ui.showToast('Tareas Pendientes', `Se desmarcaron ${count} tareas (ahora pendientes).`, 'info');
+        } else {
+          ui.showToast('Información', 'Todas las tareas ya estaban pendientes.', 'info');
+        }
+        this.refreshView();
+      });
+    }
 
     // --- Modo de visualización (Lista / Cuadrícula) ---
     if (viewListBtn) {
