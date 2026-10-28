@@ -18,7 +18,8 @@ Aplicación web profesional para la gestión interactiva de tareas (**TaskManage
 * **Eliminación Segura:** Modal de confirmación para evitar borrados accidentales.
 * **Toggle de Estado:** Marcado reactivo entre pendiente y completada con efectos visuales tachados.
 
-### 2. Filtros Dinámicos, Búsqueda y Ordenamiento
+### 2. Filtros Dinámicos, Búsqueda, Ordenamiento y Vista Lista/Cuadrícula
+* **Alternador de Vista (Lista / Cuadrícula):** Switcher profesional para alternar instantáneamente entre presentación horizontal tipo lista y vista en tarjetas multi-columna (Grid), con persistencia de preferencia en `localStorage`.
 * **Filtros por Estado:** Botones interactivos con contadores en tiempo real (*Todas*, *Pendientes*, *Completadas*).
 * **Búsqueda en Tiempo Real:** Búsqueda dinámica por título insensible a mayúsculas y acentos (`toLowerCase`, `includes`).
 * **Ordenamiento Multidimensional:** Algoritmos basados en `Array.prototype.sort()` para ordenar por:

@@ -17,6 +17,7 @@ class App {
     this.currentFilter = 'all';
     this.currentSearch = '';
     this.currentSort = 'date-desc';
+    this.currentViewMode = localStorage.getItem('taskmanager_view_mode') || 'list';
   }
 
   /**
@@ -25,7 +26,10 @@ class App {
   async init() {
     console.log('[TaskManager Pro] Inicializando aplicación ES6...');
 
-    // 1. Configurar estado de red inicial
+    // 1. Configurar vista inicial (Lista / Cuadrícula)
+    ui.setViewMode(this.currentViewMode);
+
+    // 2. Configurar estado de red inicial
     ui.updateConnectionStatus(navigator.onLine);
 
     // 2. Suscribir listeners a Custom Events (Patrón Observador - Opción B)
@@ -124,8 +128,27 @@ class App {
       sortSelect,
       syncApiBtn,
       closeDeleteModalBtn,
-      cancelDeleteBtn
+      cancelDeleteBtn,
+      viewListBtn,
+      viewGridBtn
     } = ui.elements;
+
+    // --- Modo de visualización (Lista / Cuadrícula) ---
+    if (viewListBtn) {
+      viewListBtn.addEventListener('click', () => {
+        this.currentViewMode = 'list';
+        ui.setViewMode('list');
+        localStorage.setItem('taskmanager_view_mode', 'list');
+      });
+    }
+
+    if (viewGridBtn) {
+      viewGridBtn.addEventListener('click', () => {
+        this.currentViewMode = 'grid';
+        ui.setViewMode('grid');
+        localStorage.setItem('taskmanager_view_mode', 'grid');
+      });
+    }
 
     // --- Apertura y cierre de modales ---
     openNewTaskModalBtn.addEventListener('click', () => ui.openCreateModal());

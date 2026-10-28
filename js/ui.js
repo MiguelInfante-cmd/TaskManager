@@ -1,7 +1,7 @@
 /**
  * UI SERVICE (Módulo de Manipulación del DOM e Interfaz Visual)
  * Maneja el renderizado reactivo del DOM, modales accesibles, alertas Toast,
- * controles de validación visual estricta y actualización de métricas.
+ * controles de validación visual estricta, actualización de métricas y vista en lista/cuadrícula.
  * 
  * @module ui
  */
@@ -31,6 +31,10 @@ export const ui = {
     badgePending: document.getElementById('badgePending'),
     badgeCompleted: document.getElementById('badgeCompleted'),
 
+    // Switcher de Vista (Lista / Cuadrícula)
+    viewListBtn: document.getElementById('viewListBtn'),
+    viewGridBtn: document.getElementById('viewGridBtn'),
+
     // Lista de tareas
     tasksList: document.getElementById('tasksList'),
     visibleTasksCount: document.getElementById('visibleTasksCount'),
@@ -59,6 +63,25 @@ export const ui = {
 
     // Toasts
     toastContainer: document.getElementById('toastContainer')
+  },
+
+  /**
+   * Cambia el modo de visualización entre lista y cuadrícula
+   * @param {'list'|'grid'} mode
+   */
+  setViewMode(mode) {
+    const { tasksList, viewListBtn, viewGridBtn } = this.elements;
+    if (mode === 'grid') {
+      tasksList.classList.remove('view-list');
+      tasksList.classList.add('view-grid');
+      if (viewGridBtn) viewGridBtn.classList.add('active');
+      if (viewListBtn) viewListBtn.classList.remove('active');
+    } else {
+      tasksList.classList.remove('view-grid');
+      tasksList.classList.add('view-list');
+      if (viewListBtn) viewListBtn.classList.add('active');
+      if (viewGridBtn) viewGridBtn.classList.remove('active');
+    }
   },
 
   /**
@@ -92,18 +115,22 @@ export const ui = {
         ? dateObj.toLocaleDateString('es-EC', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' })
         : 'Reciente';
 
-      // Badge de prioridad
       const priorityClass = `badge-${task.priority.toLowerCase()}`;
 
       card.innerHTML = `
-        <div class="task-checkbox-wrapper">
-          <input 
-            type="checkbox" 
-            class="custom-checkbox task-check" 
-            ${task.completed ? 'checked' : ''} 
-            title="${task.completed ? 'Marcar como pendiente' : 'Marcar como completada'}"
-            aria-label="Estado de la tarea"
-          >
+        <div class="task-top-bar">
+          <div class="task-checkbox-wrapper">
+            <input 
+              type="checkbox" 
+              class="custom-checkbox task-check" 
+              ${task.completed ? 'checked' : ''} 
+              title="${task.completed ? 'Marcar como pendiente' : 'Marcar como completada'}"
+              aria-label="Estado de la tarea"
+            >
+          </div>
+          <span class="badge ${priorityClass}">
+            ● Prioridad ${task.priority}
+          </span>
         </div>
 
         <div class="task-content">
@@ -111,9 +138,6 @@ export const ui = {
           ${task.description ? `<p class="task-description">${this.escapeHTML(task.description)}</p>` : ''}
           
           <div class="task-meta">
-            <span class="badge ${priorityClass}">
-              ● Prioridad ${task.priority}
-            </span>
             <span class="badge-date">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="10"></circle>
